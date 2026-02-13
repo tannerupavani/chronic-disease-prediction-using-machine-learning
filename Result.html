@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Chronic Disease Detection Results</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="Detailed analysis and explainability results for chronic disease prediction, featuring confidence scores.">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css">
+
+    <style>
+        /* ================================== */
+        /* Root Variables, General & Typography - ADAPTED FROM INPUT FORM */
+        /* ================================== */
+        :root {
+            --primary-color: #00897b; /* Teal from Input Form */
+            --secondary-color: #ff9800; /* Amber from Input Form */
+            --text-dark: #3e2723; /* Dark Brown from Input Form */
+            --text-light: #795548; /* Light Brown from Input Form */
+            --bg-neutral: #e4c2be; /* Light Neutral from Input Form */
+            --bg-white: #ffffff;
+            --shadow-light: 0 10px 30px rgba(0, 0, 0, 0.08);
+            --border-color: #e0e0e0;
+
+            /* Retaining strong risk/safe colors for results clarity */
+            --proj-safe-green: #4CAF50; /* Stronger green for 'Healthy' */
+            --proj-risk-red: #D32F2F; /* Stronger red for 'Risk' */
+            --proj-warning-yellow: #FFB300; /* Amber for suggestions/warnings */
+        }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            color: var(--text-light); /* Using text-light from input form */
+            background-color: var(--bg-neutral); /* Using bg-neutral from input form */
+        }
+
+        .container-xxl {
+            padding-top: 120px; /* Consistent with input form's styling */
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+        }
+
+        .text-proj-primary {
+            color: var(--primary-color) !important; /* Using primary-color (Teal) */
+        }
+
+        .text-secondary {
+            color: var(--text-light) !important; /* Using text-light */
+        }
+
+        /* ================================== */
+        /* Navbar & Buttons - ADAPTED FROM INPUT FORM */
+        /* ================================== */
+        .navbar {
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .project-title {
+            font-family: 'Nunito', sans-serif; /* Consistent font-family */
+            font-size: 1.6rem; /* Consistent font-size */
+            font-weight: 900;
+            color: var(--text-dark); /* Consistent color */
+        }
+
+        .project-title span {
+            color: var(--primary-color); /* Consistent color (Teal) */
+        }
+
+        .navbar .navbar-nav .nav-link {
+            padding: 30px 15px;
+            color: var(--text-dark); /* Consistent color */
+            font-weight: 600;
+        }
+
+        .navbar .navbar-nav .nav-link:hover,
+        .navbar .navbar-nav .nav-link.active {
+            color: var(--primary-color) !important; /* Consistent color (Teal) */
+        }
+
+        .btn-proj-primary {
+            background-color: var(--secondary-color) !important; /* Consistent color (Amber) */
+            border-color: var(--secondary-color) !important;
+            color: white !important;
+            transition: all 0.3s ease;
+        }
+
+        .btn-proj-primary:hover {
+            background-color: #ffb300 !important; /* Slightly darker Amber for hover */
+            border-color: #ffb300 !important;
+        }
+
+        .btn.rounded-pill {
+            border-radius: 50rem !important;
+        }
+
+        /* ================================== */
+        /* Results Page Specific Styling (Updated Colors) */
+        /* ================================== */
+
+        /* Main Card Container */
+        .section-card {
+            background: var(--bg-white);
+            padding: 30px;
+            border-radius: 1rem;
+            box-shadow: var(--shadow-light); /* Using the shadow from the input form */
+            height: 100%;
+        }
+
+        /* Prediction Outcome Box */
+        .result-box {
+            padding: 25px;
+            border-radius: 0.75rem;
+            margin-top: 15px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+        }
+
+        .result-box.safe {
+            background-color: var(--proj-safe-green);
+            color: white;
+        }
+        .result-box.risk {
+            background-color: var(--proj-risk-red);
+            color: white;
+        }
+
+        .result-label {
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .result-value {
+            font-size: 3.5rem;
+            font-weight: 900;
+            margin-top: 5px;
+            line-height: 1.2;
+        }
+
+        /* Suggestions Box */
+        .suggestion-box {
+            border-left: 5px solid var(--proj-warning-yellow);
+            background-color: #fffde7;
+            color: var(--text-dark); /* Using the dark text color for contrast */
+            padding: 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            margin-top: 30px;
+            text-align: left;
+        }
+
+        /* Feature Importance Bar */
+        .feature-bar-container {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .feature-name {
+            flex: 0 0 40%;
+            text-align: right;
+            padding-right: 10px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: var(--text-dark);
+        }
+
+        .feature-bar {
+            flex: 1;
+            height: 12px;
+            border-radius: 6px;
+            background-color: var(--bg-neutral);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-bar-value {
+            height: 100%;
+            background-color: var(--primary-color);
+            transition: width 1s ease-out;
+            border-radius: 6px;
+        }
+
+        /* Input Parameters Table */
+        .input-params-table th, .input-params-table td {
+            border: none;
+            padding: 10px 0;
+            font-size: 1rem;
+        }
+        .input-params-table th {
+            text-align: left;
+            width: 50%;
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+        .input-params-table td {
+            text-align: right;
+            font-weight: 600;
+            color: var(--text-light);
+        }
+    </style>
+    <link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet">
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg bg-white navbar-light sticky-top p-0">
+        <a href="/UserHome" class="navbar-brand d-flex align-items-center px-4 px-lg-5">
+            <h1 class="m-0 project-title">CHRONIC DISEASE <span>PREDICTION PLATFORM</span></h1>
+        </a>
+        <button class="navbar-toggler me-4" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarCollapse">
+            <div class="navbar-nav ms-auto p-4 p-lg-0">
+                <a href="/UserHome" class="nav-item nav-link">Home</a>
+                <a href="/Detect" class="nav-item nav-link active">Run Prediction</a>
+                <a href="/about" class="nav-item nav-link active">About </a>
+            </div>
+            <a href="/userlogin" class="btn btn-proj-primary rounded-0 py-4 px-lg-5 d-none d-lg-block">
+                Logout <i class="fa fa-arrow-right ms-3"></i>
+            </a>
+        </div>
+    </nav>
+
+    <div class="container-xxl py-5">
+        <div class="container">
+            <div class="text-center mx-auto mb-5" style="max-width: 900px;">
+                <h2 class="text-proj-primary display-5 fw-bold">Prediction Results & Analysis</h2>
+                <p class="text-secondary lead">Model output with confidence score and personalized suggestions.</p>
+            </div>
+
+            <div class="row g-4 mb-5">
+                <div class="col-lg-6 col-md-12">
+                    <div class="section-card text-center">
+                        <h4 class="mb-4 text-proj-primary fw-bold">Prediction Outcome</h4>
+
+                        <div class="result-box {% if prediction == 'Healthy' %}safe{% else %}risk{% endif %}">
+                            <div class="result-label">Disease Risk Status</div>
+                            <div class="result-value">{{ prediction|default('Unknown') }}</div>
+                        </div>
+
+                        <div class="mt-4 pt-3 border-top">
+                            <p class="fw-bold mb-1">Model Confidence Score:</p>
+                            <h4 class="text-proj-primary">{{ (probability * 100)|default(0)|round(2) }}%</h4>
+                        </div>
+
+                        <div class="suggestion-box">
+                            <i class="fas fa-exclamation-triangle me-2 text-warning"></i>
+                            **Recommendation:**
+                            <p class="mt-2 mb-0 text-dark">
+                            {% if prediction == 'Healthy' %}
+                            Maintain a **healthy lifestyle** and schedule regular preventive check-ups with your doctor.
+                            {% elif prediction == 'At-Risk' %}
+                            Increase **physical activity**, follow a balanced diet, and monitor the input biomarkers regularly. Consult a professional for personalized advice.
+                            {% elif prediction == 'Early-Stage' %}
+                            Consult a healthcare professional **immediately** to discuss diagnostic tests and potential early intervention strategies.
+                            {% elif prediction == 'Chronic' %}
+                            Follow medical treatment plans strictly, schedule **frequent follow-up check-ups**, and manage lifestyle factors diligently.
+                            {% elif prediction == 'Critical' %}
+                            **Immediate medical attention is required.** Please follow urgent treatment protocols provided by your physician.
+                            {% else %}
+                            No specific suggestions available for this result. Please consult a medical professional.
+                            {% endif %}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-6 col-md-12">
+                    <div class="section-card mb-4">
+                        <h4 class="mb-4 text-proj-primary fw-bold text-center">Key Risk Factors</h4>
+                        <p class="text-center text-secondary mb-3">Factors most influencing this prediction (based on their magnitude).</p>
+                        
+                        {% set feature_importances = feature_importances|default([
+                            ('High Blood Pressure', 0.85),
+                            ('High Cholesterol', 0.70),
+                            ('Age', 0.60),
+                            ('BMI', 0.45),
+                            ('Smoking History', 0.30)
+                        ]) %}
+
+                        {% for feature, importance in feature_importances %}
+                            <div class="feature-bar-container">
+                                <div class="feature-name">{{ feature }}</div>
+                                <div class="feature-bar">
+                                    <div class="feature-bar-value" style="width: {{ (importance * 100)|round(0) }}%;"></div>
+                                </div>
+                            </div>
+                        {% endfor %}
+
+                        <small class="d-block mt-3 text-center text-proj-primary">
+                            Higher bar length means a greater impact on the prediction.
+                        </small>
+                    </div>
+
+                    
+                </div>
+            </div>
+
+            <div class="text-center">
+                <a href="/Detect" class="btn btn-proj-primary btn-lg rounded-pill px-5">
+                    Run Another Prediction <i class="fa fa-redo ms-2"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
+</body>
+</html>

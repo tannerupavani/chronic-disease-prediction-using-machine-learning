@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Comparison Graph - Chronic Disease Prediction</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+
+    <link href="{{url_for('static', filename='css/bootstrap.min.css')}}" rel="stylesheet">
+
+    <style>
+        /* 🎨 Design Variables (Warm/Organic Palette from Style 3) */
+        :root {
+            --primary-color: #00897b;
+            /* Deep Teal/Mint (Earthy & Trustworthy) */
+            --secondary-color: #ff9800;
+            /* Warm Orange/Amber Accent */
+            --text-dark: #3e2723;
+            /* Deep Brown/Coffee for high contrast text */
+            --text-light: #795548;
+            /* Softer Brown for body text */
+            --bg-neutral: #fbe9e7;
+            /* Very Light Peach/Warm Background */
+            --bg-white: #ffffff;
+            --font-heading: 'Nunito', sans-serif;
+            --font-main: 'Nunito', sans-serif;
+            --shadow-light: 0 10px 30px rgba(0, 0, 0, 0.08);
+            /* Softer shadow */
+            --border-color: #e0e0e0;
+            --success: #66bb6a;
+            /* Lighter, friendlier green */
+            --warning: #ffb300;
+            --info: #4dd0e1;
+        }
+
+        /* 🧹 Global Styles */
+        body {
+            font-family: var(--font-main);
+            /* Soft, solid warm background */
+            background-color: var(--bg-neutral);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            color: var(--text-light);
+        }
+
+        /* Container style for max-width and center */
+        .page-container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* --- Navbar Styles --- */
+        .navbar {
+            background-color: var(--bg-white) !important;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            padding: 15px 0 !important;
+        }
+
+        .navbar-brand h1 {
+            font-family: var(--font-heading);
+            font-size: 1.6rem !important;
+            font-weight: 900;
+            color: var(--text-dark) !important;
+        }
+
+        .navbar-brand h1 span {
+            color: var(--primary-color);
+        }
+
+        .navbar-nav .nav-link {
+            color: var(--text-light) !important;
+            font-weight: 700;
+            padding: 10px 15px !important;
+            transition: color 0.3s, border-bottom 0.3s;
+            line-height: 1.2;
+            text-align: center;
+        }
+
+        .navbar-nav .nav-link:hover,
+        .navbar-nav .nav-link.active {
+            color: var(--primary-color) !important;
+            border-bottom: 3px solid var(--secondary-color);
+            /* Orange underline */
+        }
+
+        .btn-primary {
+            background-color: var(--secondary-color) !important;
+            /* Orange button */
+            border-color: var(--secondary-color) !important;
+            font-weight: 700 !important;
+            text-transform: uppercase;
+            border-radius: 8px;
+            /* Rounded buttons */
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+
+        .btn-primary:hover {
+            background-color: #ffb300 !important;
+            border-color: #ffb300 !important;
+        }
+
+        /* --- Page Header --- */
+        .page-header-simple {
+            background: var(--bg-neutral);
+            padding: 60px 0 40px 0;
+            text-align: center;
+        }
+
+        .page-header-simple h1 {
+            font-family: var(--font-heading);
+            font-weight: 900;
+            font-size: 3.0rem;
+            color: var(--text-dark);
+            margin-bottom: 10px;
+        }
+
+        .breadcrumb-item.active {
+            color: var(--secondary-color) !important;
+            /* Orange breadcrumb */
+            font-weight: 700;
+        }
+
+        /* --- Content Card (Standardized Section Style) - Adopted for the graph panel */
+        .content-card {
+            background: var(--bg-white);
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: var(--shadow-light);
+            border-left: 5px solid var(--primary-color);
+            /* Teal accent border */
+            margin-top: 50px;
+            margin-bottom: 50px;
+            width: 100%;
+        }
+
+        /* --- Graph Content Styling - Adjusted for new colors */
+        .graph-container h1 {
+            font-family: var(--font-heading);
+            color: var(--text-dark); /* Dark heading */
+            font-weight: 800;
+            font-size: 2.5rem;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 10px;
+            margin-bottom: 30px;
+        }
+
+        .graph-image {
+            width: 100%;
+            max-width: 900px;
+            height: auto;
+            border-radius: 10px; /* Slightly less rounded */
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            border: 3px solid var(--primary-color); /* Teal border for graph */
+        }
+
+        .graph-container p {
+            color: var(--text-light);
+            font-size: 1.1rem;
+        }
+
+
+        /* --- Footer --- */
+        .footer {
+            background-color: var(--text-dark) !important;
+            /* Deep Brown Footer */
+            color: #d7ccc8;
+            padding: 30px 0 !important;
+            text-align: center;
+            font-size: 0.9rem;
+            margin-top: auto;
+        }
+
+        .footer a {
+            color: var(--secondary-color) !important;
+            /* Orange link */
+        }
+
+        /* Responsive Grid Adjustments */
+        @media (max-width: 992px) {
+            .navbar-collapse {
+                background-color: var(--bg-white);
+                border-top: 1px solid #eee;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav class="navbar navbar-expand-lg bg-white navbar-light sticky-top p-0 wow fadeIn" data-wow-delay="0.1s">
+        <div class="page-container navbar-content d-flex justify-content-between align-items-center w-100">
+            <a href="/AdminHome" class="navbar-brand d-flex align-items-center px-4 px-lg-0">
+                <h1 class="m-0 text-primary">CHRONIC DISEASE PREDICTION USING <span>MACHINE LEARNING</span></h1>
+            </a>
+            <button type="button" class="navbar-toggler me-4" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarCollapse">
+                <div class="navbar-nav ms-auto p-4 p-lg-0">
+                    <a href="/AdminHome" class="nav-item nav-link">Home</a>
+                    <a href="/Upload" class="nav-item nav-link">Upload Dataset</a>
+                    <a href="/preprocess" class="nav-item nav-link">Preprocess & Split</a>
+                    <a href="/xgboost" class="nav-item nav-link">Run XGBoost</a>
+                    <a href="/RandomForest" class="nav-item nav-link">Random Forest</a>
+                    <a href="/Decision" class="nav-item nav-link">Decision Tree</a>
+                    <a href="/comparison" class="nav-item nav-link active">Comparison Graph</a>
+                </div>
+                <a href="/adminlogin" class="btn btn-primary rounded-0 py-4 px-lg-5 d-none d-lg-block">Logout<i
+                        class="fa fa-sign-out-alt ms-3"></i></a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="page-header-simple">
+        <div class="container">
+            <h1>Model Performance Comparison</h1>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb justify-content-center">
+                    <li class="breadcrumb-item"><a class="text-secondary" href="/AdminHome">Home</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Comparison Graph</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+
+    <div class="container-xxl py-5 flex-grow-1">
+        <div class="page-container">
+            <div class="content-card graph-container text-center wow fadeIn" data-wow-delay="0.1s">
+
+                <h1>Algorithm Accuracy Comparison</h1>
+
+                <img src="{{url_for('static', filename='model_accuracy.png')}}" alt="Model Accuracy Graph"
+                    class="graph-image">
+
+                <p class="mt-4">
+                    The graph above visually compares the performance metrics (e.g., Accuracy) of the XGBoost, Random Forest, and Decision Tree models used in the Chronic Disease prediction system.
+                </p>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid footer wow fadeIn" data-wow-delay="0.1s">
+        <div class="container">
+            &copy; <a class="border-bottom" href="#">PROJECTED EX</a>. All Rights Reserved.
+        </div>
+    </div>
+    <a href="#" class="btn btn-lg btn-primary btn-lg-square rounded-circle back-to-top"><i
+            class="bi bi-arrow-up"></i></a>
+
+
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ url_for('static', filename='lib/wow/wow.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='lib/easing/easing.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='lib/waypoints/waypoints.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='lib/counterup/counterup.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='lib/owlcarousel/owl.carousel.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <script>
+        new WOW().init();
+    </script>
+</body>
+
+</html>

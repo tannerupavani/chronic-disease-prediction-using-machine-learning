@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Admin Home - Chronic Disease Prediction using Machine Learning</title> 
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+
+    <link href="{{url_for('static', filename='css/bootstrap.min.css')}}" rel="stylesheet">
+
+    <style>
+        /* 🎨 Design Variables (Warm/Organic Palette from Style 3) */
+        :root {
+            --primary-color: #00897b; /* Deep Teal/Mint (Earthy & Trustworthy) */
+            --secondary-color: #ff9800; /* Warm Orange/Amber Accent */
+            --text-dark: #3e2723; /* Deep Brown/Coffee for high contrast text */
+            --text-light: #795548; /* Softer Brown for body text */
+            --bg-neutral: #fbe9e7; /* Very Light Peach/Warm Background */
+            --bg-white: #ffffff;
+            --font-heading: 'Nunito', sans-serif;
+            --font-main: 'Nunito', sans-serif;
+            --shadow-light: 0 10px 30px rgba(0, 0, 0, 0.08); /* Softer shadow */
+            --border-color: #e0e0e0;
+            --success: #66bb6a; /* Lighter, friendlier green */
+            --warning: #ffb300;
+            --info: #4dd0e1;
+        }
+
+        /* 🧹 Global Styles */
+        body {
+            font-family: var(--font-main);
+            /* Soft, solid warm background */
+            background-color: var(--bg-neutral); 
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            color: var(--text-light); 
+        }
+
+        /* Container style */
+        .page-container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* --- Navbar Styles --- */
+        .navbar {
+            background-color: var(--bg-white) !important;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            padding: 15px 0 !important; /* Slightly reduced padding */
+        }
+        .navbar-brand h1 {
+            font-family: var(--font-heading);
+            font-size: 1.6rem !important; /* Larger logo font */
+            font-weight: 900;
+            color: var(--text-dark) !important;
+        }
+        .navbar-brand h1 span {
+            color: var(--primary-color);
+        }
+        .navbar-nav .nav-link {
+            color: var(--text-light) !important;
+            font-weight: 700;
+            padding: 10px 15px !important;
+            transition: color 0.3s, border-bottom 0.3s;
+            line-height: 1.2;
+            text-align: center;
+        }
+        .navbar-nav .nav-link:hover,
+        .navbar-nav .nav-link.active {
+            color: var(--primary-color) !important;
+            border-bottom: 3px solid var(--secondary-color); /* Orange underline */
+        }
+        .btn-primary {
+            background-color: var(--secondary-color) !important; /* Orange button */
+            border-color: var(--secondary-color) !important;
+            font-weight: 700 !important;
+            text-transform: uppercase;
+            border-radius: 8px; /* Rounded buttons */
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+        .btn-primary:hover {
+            background-color: #ffb300 !important;
+            border-color: #ffb300 !important;
+        }
+        
+        /* --- Page Header --- */
+        .page-header-simple {
+            background: var(--bg-neutral);
+            padding: 60px 0 40px 0;
+            text-align: center;
+        }
+        .page-header-simple h1 {
+            font-family: var(--font-heading);
+            font-weight: 900; 
+            font-size: 3.0rem; /* Larger dashboard title */
+            color: var(--text-dark);
+            margin-bottom: 10px;
+        }
+        .breadcrumb-item.active {
+            color: var(--secondary-color) !important; /* Orange breadcrumb */
+            font-weight: 700;
+        }
+
+        /* --- Main Content Area --- */
+        .main-content-wrapper {
+            flex-grow: 1;
+            padding: 30px 0;
+        }
+        
+        /* --- Info Metrics Cards --- */
+        .info-card {
+            background-color: var(--bg-white);
+            border-radius: 10px;
+            box-shadow: var(--shadow-light);
+            padding: 30px 20px;
+            text-align: center;
+            border: none;
+            border-left: 5px solid var(--primary-color); /* Teal border */
+            transition: transform 0.3s, box-shadow 0.3s;
+            margin-bottom: 25px;
+        }
+        .info-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+        }
+        .info-card i {
+            color: var(--secondary-color); /* Orange icon */
+            font-size: 3.0rem;
+            margin-bottom: 10px;
+        }
+        .info-card .number {
+            font-family: var(--font-heading);
+            font-weight: 900;
+            color: var(--text-dark);
+            font-size: 2.5rem;
+            display: block;
+        }
+        .info-card .label {
+            font-size: 1.0rem;
+            color: var(--text-light);
+            text-transform: capitalize;
+            font-weight: 600;
+            display: block;
+        }
+        
+        /* --- Service Cards (Workflow Steps) --- */
+        .card {
+            background: var(--bg-white);
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--border-color);
+            margin-bottom: 25px;
+        }
+        .card:hover {
+            box-shadow: var(--shadow-light) !important;
+        }
+        .card-body h5 {
+            font-family: var(--font-heading);
+            font-weight: 800;
+            color: var(--text-dark);
+        }
+        .card .btn-outline-primary {
+            color: var(--primary-color);
+            border-color: var(--primary-color);
+            font-weight: 700;
+            border-radius: 5px;
+        }
+        .card .btn-outline-primary:hover {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        .card .p-4 {
+             background-color: #f7f3f2 !important; /* Soft warm light color */
+             border-radius: 10px 10px 0 0 !important;
+        }
+        
+        /* --- New Dashboard Elements Styles --- */
+        .dashboard-panel {
+            background: var(--bg-white);
+            border-radius: 10px;
+            box-shadow: var(--shadow-light);
+            padding: 30px;
+            margin-bottom: 30px;
+            border-left: 5px solid var(--primary-color); /* Teal highlight */
+        }
+        .dashboard-panel h4 {
+            font-family: var(--font-heading);
+            font-weight: 800;
+            color: var(--text-dark);
+            border-bottom: 2px solid var(--bg-neutral); /* Soft divider */
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        
+        /* Table/Activity List */
+        .activity-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px dashed #e0e0e0;
+            font-size: 1.0rem;
+        }
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+        .activity-icon {
+            font-size: 1.4rem;
+            margin-right: 15px;
+        }
+        .status-badge {
+            padding: 6px 12px;
+            border-radius: 50px; /* Fully rounded badges */
+            font-size: 0.85rem;
+            font-weight: 700;
+        }
+        .status-success { background-color: var(--success); color: white; }
+        .status-pending { background-color: var(--warning); color: var(--text-dark); }
+        .status-info { background-color: var(--info); color: white; }
+
+        /* Chart Placeholder */
+        .chart-placeholder {
+            text-align: center;
+            padding: 50px 20px;
+            border: 2px dashed var(--border-color);
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+        .chart-placeholder i {
+            font-size: 5rem;
+            color: var(--secondary-color); /* Orange icon */
+            margin-bottom: 15px;
+        }
+
+
+        /* --- Footer --- */
+        .footer {
+            background-color: var(--text-dark) !important; /* Deep Brown Footer */
+            color: #d7ccc8;
+            padding: 30px 0 !important;
+            text-align: center;
+            font-size: 0.9rem;
+            margin-top: auto;
+        }
+        .footer a {
+            color: var(--secondary-color) !important; /* Orange link */
+        }
+        
+        /* Responsive Grid Adjustments */
+        @media (max-width: 992px) {
+            .navbar-collapse {
+                background-color: var(--bg-white);
+                border-top: 1px solid #eee;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    
+    <nav class="navbar navbar-expand-lg bg-white navbar-light sticky-top p-0 wow fadeIn" data-wow-delay="0.1s">
+        <div class="page-container navbar-content d-flex justify-content-between align-items-center w-100">
+            <a href="/AdminHome" class="navbar-brand d-flex align-items-center px-4 px-lg-0">
+                <h1 class="m-0 text-primary">CHRONIC DISEASE PREDICTION USING <span>MACHINE LEARNING</span></h1>
+            </a>
+            <button type="button" class="navbar-toggler me-4" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarCollapse">
+                <div class="navbar-nav ms-auto p-4 p-lg-0">
+                    <a href="/AdminHome" class="nav-item nav-link active">Home</a>
+                    <a href="/Upload" class="nav-item nav-link">Upload Dataset</a>
+                    <a href="/preprocess" class="nav-item nav-link">Preprocess & Split</a>
+                    <a href="/xgboost" class="nav-item nav-link">Run XGBoost</a>
+                    <a href="/RandomForest" class="nav-item nav-link">Random Forest</a>
+                    <a href="/Decision" class="nav-item nav-link">Decision Tree</a>
+                    <a href="/comparison" class="nav-item nav-link">Comparison Graph</a>
+                </div>
+                <a href="/adminlogin" class="btn btn-primary rounded-0 py-4 px-lg-5 d-none d-lg-block">Logout<i class="fa fa-sign-out-alt ms-3"></i></a>
+            </div>
+        </div>
+    </nav>
+    <div class="page-header-simple wow fadeIn" data-wow-delay="0.1s">
+        <div class="page-container">
+            <h1 class="display-3 mb-3 animated slideInDown">Admin Dashboard</h1>
+            <nav aria-label="breadcrumb animated slideInDown">
+                <ol class="breadcrumb justify-content-center text-uppercase mb-0">
+                    <li class="breadcrumb-item"><a href="/AdminHome" style="color: var(--text-dark);">Home</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Dashboard</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+    <div class="main-content-wrapper">
+        <div class="page-container">
+            <div class="row g-4 justify-content-center">
+                <div class="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
+                    <div class="info-card">
+                        <i class="fas fa-microscope"></i>
+                        <span class="number">150+</span>
+                        <span class="label">Patient Records</span>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.3s">
+                    <div class="info-card">
+                        <i class="fas fa-file-csv"></i>
+                        <span class="number">6</span>
+                        <span class="label">Uploaded Datasets</span>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.5s">
+                    <div class="info-card">
+                        <i class="fas fa-brain"></i>
+                        <span class="number">3</span>
+                        <span class="label">ML Models Trained</span>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.7s">
+                    <div class="info-card">
+                        <i class="fas fa-percent"></i>
+                        <span class="number">99.1%</span>
+                        <span class="label">Highest Accuracy</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row g-4 mt-5">
+                <div class="col-lg-6 wow fadeInUp" data-wow-delay="0.1s">
+                    <div class="dashboard-panel">
+                        <h4><i class="fas fa-stream me-2" style="color: var(--secondary-color);"></i> Recent System Activity</h4>
+                        
+                        <div class="activity-item">
+                            <div>
+                                <i class="fas fa-upload activity-icon" style="color: var(--text-light);"></i>
+                                **New Dataset:** `Health_V7.csv` uploaded.
+                            </div>
+                            <span class="status-badge status-success">Completed</span>
+                        </div>
+
+                        <div class="activity-item">
+                            <div>
+                                <i class="fas fa-spinner activity-icon" style="color: var(--warning);"></i>
+                                **Task:** Preprocessing is running...
+                            </div>
+                            <span class="status-badge status-pending">Pending</span>
+                        </div>
+
+                        <div class="activity-item">
+                            <div>
+                                <i class="fas fa-chart-line activity-icon" style="color: var(--primary-color);"></i>
+                                **XGBoost** model finished training.
+                            </div>
+                            <span class="status-badge status-success">Completed</span>
+                        </div>
+                        
+                        <div class="activity-item">
+                            <div>
+                                <i class="fas fa-user-tie activity-icon" style="color: var(--info);"></i>
+                                **Admin:** Configuration updated.
+                            </div>
+                            <span class="status-badge status-info">Info</span>
+                        </div>
+
+                        <div class="activity-item">
+                            <div>
+                                <i class="fas fa-chart-bar activity-icon" style="color: var(--primary-color);"></i>
+                                **Random Forest** model generated explanations.
+                            </div>
+                            <span class="status-badge status-success">Completed</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-6 wow fadeInUp" data-wow-delay="0.3s">
+                    <div class="dashboard-panel">
+                        <h4><i class="fas fa-tachometer-alt me-2" style="color: var(--secondary-color);"></i> Live Model Performance</h4>
+                        <div class="chart-placeholder">
+                            <i class="fas fa-chart-area"></i>
+                            <h5 style="font-family: var(--font-heading); color: var(--text-dark);">Prediction Performance Visualizer</h5>
+                            <p class="text-muted">Interactive graph placeholder for real-time model accuracy, AUC, and feature importance distribution (requires JavaScript library).</p>
+                            <a href="/comparison" class="btn btn-sm btn-outline-primary mt-2">View Full Metrics</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-center mx-auto mb-5 mt-5 wow fadeInUp" data-wow-delay="0.1s" style="max-width: 800px;">
+                <h2 class="display-5 mb-3" style="font-family: var(--font-heading); font-weight: 900; color: var(--text-dark);">Chronic Disease Prediction Workflow</h2>
+                <p style="color: var(--text-light);">Follow these critical steps to manage patient data, train the diagnostic models, and generate predictive results.</p>
+            </div>
+            <div class="row g-4">
+                <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
+                    <div class="card shadow border-0 rounded">
+                        <div class="p-4 text-center bg-light rounded-top">
+                             <i class="fas fa-file-upload" style="color: var(--secondary-color); font-size: 3rem;"></i>
+                        </div>
+                        <div class="card-body text-center">
+                            <h5 class="card-title">1. Upload Patient Data</h5>
+                            <p class="card-text" style="color: var(--text-light);">Securely upload and register new or existing chronic disease datasets (e.g., Diabetes, Heart).</p>
+                            <a href="/Upload" class="btn btn-sm btn-outline-primary mt-2">Go to Upload</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.3s">
+                    <div class="card shadow border-0 rounded">
+                        <div class="p-4 text-center bg-light rounded-top">
+                             <i class="fas fa-filter" style="color: var(--secondary-color); font-size: 3rem;"></i>
+                        </div>
+                        <div class="card-body text-center">
+                            <h5 class="card-title">2. Preprocess & Split Data</h5>
+                            <p class="card-text" style="color: var(--text-light);">Normalize, handle missing values, and split data for accurate model training.</p>
+                            <a href="/preprocess" class="btn btn-sm btn-outline-primary mt-2">Start Preprocessing</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.5s">
+                    <div class="card shadow border-0 rounded">
+                        <div class="p-4 text-center bg-light rounded-top">
+                             <i class="fas fa-chart-pie" style="color: var(--secondary-color); font-size: 3rem;"></i>
+                        </div>
+                        <div class="card-body text-center">
+                            <h5 class="card-title">3. Run Models & Compare</h5>
+                            <p class="card-text" style="color: var(--text-light);">Execute all classification algorithms and view performance comparisons and feature importance.</p>
+                            <a href="/comparison" class="btn btn-sm btn-outline-primary mt-2">View Comparison</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br><br>
+    
+    <div class="footer wow fadeIn" data-wow-delay="0.1s">
+        <div class="page-container py-4">
+            <div class="row">
+                <div class="col-md-6 text-center text-md-start mb-3 mb-md-0" style="font-size: 0.9rem; font-weight: 500;">
+                    &copy; <a class="border-bottom" href="#">PrediHealth ML Innovations</a>. All Rights Reserved.
+                </div>
+                <div class="col-md-6 text-center text-md-end">
+                    Designed By <a class="border-bottom" href="#">SWTPVTLTD</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <a href="#" class="btn btn-lg btn-primary btn-lg-square rounded-circle back-to-top"><i class="bi bi-arrow-up"></i></a>
+
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ url_for('static', filename='lib/wow/wow.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='lib/easing/easing.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='lib/waypoints/waypoints.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='lib/counterup/counterup.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='lib/owlcarousel/owl.carousel.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='lib/tempusdominus/js/moment.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='lib/tempusdominus/js/moment-timezone.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <script>
+        // Initialize WOW.js for animations
+        new WOW().init();
+    </script>
+</body>
+
+</html>

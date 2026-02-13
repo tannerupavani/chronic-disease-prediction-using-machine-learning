@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>About Prediction - Chronic Disease Detection</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="Learn more about the chronic disease prediction, risk stages, and health guidance.">
+
+    <link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css">
+
+    <style>
+        body { background-color: #fbe9e7; color: #3e2723; font-family: 'Nunito', sans-serif; }
+        .section-card { background: #ffffff; border-radius: 10px; padding: 30px; box-shadow: 0 5px 20px rgba(0,0,0,0.05); margin-bottom: 30px; }
+        h1,h2,h3,h4,h5,h6 { color: #3e2723; }
+        .risk-stage { font-weight: 700; margin-bottom: 10px; }
+        .risk-Healthy { color: #28a745; }
+        .risk-At-Risk { color: #ffc107; }
+        .risk-Early-Stage { color: #17a2b8; }
+        .risk-Chronic { color: #fd7e14; }
+        .risk-Critical { color: #dc3545; }
+    </style>
+</head>
+
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg bg-white navbar-light sticky-top">
+        <a href="/UserHome" class="navbar-brand d-flex align-items-center px-4 px-lg-5">
+            <h1 class="m-0 project-title">CHRONIC <span>DISEASE DETECTION</span></h1>
+        </a>
+        <button class="navbar-toggler me-4" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarCollapse">
+            <div class="navbar-nav ms-auto p-4 p-lg-0">
+                <a href="/UserHome" class="nav-item nav-link">Home</a>
+                <a href="/Detect" class="nav-item nav-link">Run Prediction</a>
+                <a href="/about" class="nav-item nav-link active">About</a>
+            </div>
+            <a href="/userlogin" class="btn btn-proj-primary rounded-0 py-4 px-lg-5 d-none d-lg-block">
+                Logout <i class="fa fa-arrow-right ms-3"></i>
+            </a>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <div class="container-xxl py-5">
+        <div class="container">
+            <div class="text-center mx-auto mb-5" style="max-width: 900px;">
+                <h2 class="display-5 fw-bold text-proj-primary">About This Prediction</h2>
+                
+            </div>
+
+            <div class="section-card">
+                <h4>Understanding the Prediction</h4>
+                <p>The model predicts the disease risk based on your input features such as age, BMI, blood pressure, biomarkers, and lifestyle factors. The output indicates the current risk stage and provides a confidence score for the prediction.</p>
+            </div>
+
+            <div class="section-card">
+                <h4>Risk Stages Explained</h4>
+                <div class="risk-stage risk-Healthy">Healthy: Low risk, maintain a healthy lifestyle.</div>
+                <div class="risk-stage risk-At-Risk">At-Risk: Some risk detected, monitor your lifestyle and biomarkers.</div>
+                <div class="risk-stage risk-Early-Stage">Early-Stage: Early signs of disease, consult a healthcare professional.</div>
+                <div class="risk-stage risk-Chronic">Chronic: Disease detected, follow medical treatment plans.</div>
+                <div class="risk-stage risk-Critical">Critical: High severity, immediate medical attention required.</div>
+            </div>
+
+            <div class="section-card">
+                <h4>Interpreting the Confidence Score</h4>
+                <p>The confidence score represents the probability of the prediction. A higher percentage indicates that the model is more confident in the predicted risk stage.</p>
+            </div>
+
+            <div class="text-center">
+                <a href="/Detect" class="btn btn-proj-primary btn-lg">Back to Prediction <i class="fa fa-arrow-left ms-2"></i></a>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
+</body>
+</html>

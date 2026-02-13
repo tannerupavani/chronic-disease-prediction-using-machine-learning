@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <!-- Updated Title to be concise and reference the new project -->
+    <title>Client Login - Chronic Disease AI System</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="User/Client Login Portal for Chronic Disease Prediction using Machine Learning.">
+    
+    <!-- Using Nunito font for consistency across the application -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet"> 
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+
+    <style>
+        /* 🎨 Design Variables (Warm/Organic Palette - Deep Teal & Orange) */
+        :root {
+            --primary-color: #00897b; /* Deep Teal/Mint (Earthy & Trustworthy) */
+            --secondary-color: #ff9800; /* Warm Orange/Amber Accent for buttons/icons */
+            --text-dark: #3e2723; /* Deep Brown/Coffee for high contrast text and footer */
+            --text-light: #795548; /* Softer Brown for body text */
+            --bg-neutral: #fbe9e7; /* Very Light Peach/Warm Background */
+            --bg-card: #ffffff; /* White card background */
+            --border-color: #e0e0e0; /* Softer border */
+            --shadow-light: 0 10px 30px rgba(0, 0, 0, 0.08); /* Softer shadow */
+            --font-heading: 'Nunito', sans-serif;
+            --font-body: 'Nunito', sans-serif;
+        }
+
+        /* 🧹 Global Styles */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background-color: var(--bg-neutral); 
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            color: var(--text-light);
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* --- 1. Navbar --- */
+        .navbar {
+            background-color: var(--bg-card);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05); 
+            padding: 15px 0;
+        }
+        .navbar-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo h1 {
+            font-family: var(--font-heading);
+            font-size: 1.6rem;
+            color: var(--text-dark);
+            line-height: 1.2;
+            margin: 0;
+            font-weight: 900;
+        }
+        .logo h1 span {
+            color: var(--primary-color); 
+        }
+        .nav-links {
+            display: flex;
+            gap: 25px;
+            align-items: center;
+        }
+        .nav-links a {
+            color: var(--text-light);
+            text-decoration: none;
+            font-weight: 700;
+            padding: 5px 0;
+            transition: color 0.3s, border-bottom 0.3s;
+        }
+        .nav-links a:hover {
+            color: var(--primary-color);
+        }
+        .nav-links .active {
+            color: var(--primary-color);
+            border-bottom: 3px solid var(--secondary-color); /* Orange active line */
+        }
+        /* Style the Register link as a clear button */
+        .nav-links a[href="/register"] {
+            background-color: var(--secondary-color);
+            color: var(--text-dark);
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 800;
+            text-transform: uppercase;
+            transition: background-color 0.3s;
+            border-bottom: none !important;
+            display: flex; /* Ensure register link text is centered/aligned */
+            align-items: center;
+            gap: 8px;
+        }
+        .nav-links a[href="/register"]:hover {
+            background-color: #ffb300;
+            color: var(--text-dark);
+        }
+
+
+        /* --- 2. Main Login Content (Centered and Rich) --- */
+        .main-content {
+            flex-grow: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px 0;
+        }
+        .login-card {
+            background: var(--bg-card);
+            border-radius: 12px;
+            box-shadow: var(--shadow-light);
+            width: 100%;
+            max-width: 900px;
+            /* Layout: Visual (Left, Wider) | Form (Right, Narrower) */
+            grid-template-columns: 1.2fr 1fr;
+            display: grid;
+            overflow: hidden;
+        }
+
+        /* Left Side: Visual/Branding */
+        .login-visual {
+            background: var(--primary-color); /* Deep Teal background */
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .login-visual h2 {
+            color: white;
+            font-family: var(--font-heading);
+            font-size: 2.2rem;
+            margin-bottom: 20px;
+            font-weight: 900;
+        }
+        .login-visual p {
+            font-weight: 600;
+            opacity: 0.9;
+            margin-bottom: 30px;
+            line-height: 1.6;
+            max-width: 80%;
+        }
+        .icon-main {
+            font-size: 5rem;
+            color: var(--bg-card); 
+            margin-bottom: 20px;
+            text-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Right Side: Form */
+        .login-form-wrapper {
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .form-title {
+            font-family: var(--font-heading);
+            font-size: 2rem; 
+            font-weight: 900;
+            color: var(--text-dark);
+            margin-bottom: 30px;
+            text-align: center;
+            border-bottom: 2px solid var(--bg-neutral); 
+            padding-bottom: 15px;
+        }
+        .form-group {
+            margin-bottom: 25px;
+        }
+        .form-label {
+            font-weight: 800;
+            color: var(--text-dark);
+            margin-bottom: 8px;
+            display: block;
+            font-size: 0.95rem;
+        }
+        .form-control {
+            width: 100%;
+            padding: 18px 15px; /* Taller inputs */
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+        .form-control:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.25rem rgba(0, 137, 123, 0.2);
+            outline: none;
+        }
+        .btn-submit {
+            background-color: var(--secondary-color); /* Orange submit button */
+            color: var(--text-dark);
+            padding: 15px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 900;
+            font-size: 1.15rem;
+            width: 100%;
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: background-color 0.3s, transform 0.1s;
+        }
+        .btn-submit:hover {
+            background-color: #ffb300;
+            transform: translateY(-1px);
+        }
+        .register-link {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .register-link a {
+            color: var(--primary-color);
+            font-weight: 800;
+            text-decoration: none;
+        }
+
+        /* --- 3. Footer --- */
+        .footer {
+            background-color: var(--text-dark); /* Deep Brown Footer */
+            color: #d7ccc8; 
+            padding: 25px 0;
+            text-align: center;
+            font-size: 0.9rem;
+            margin-top: auto;
+        }
+
+        /* 📱 Responsive Design */
+        @media (max-width: 768px) {
+            .login-card {
+                grid-template-columns: 1fr;
+                max-width: 450px;
+            }
+            .login-visual {
+                display: none; 
+            }
+            .form-title {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav class="navbar">
+        <div class="container navbar-content">
+            <div class="logo">
+                <!-- Simplified Title -->
+                <h1>CHRONIC DISEASE <span>AI SYSTEM</span></h1>
+            </div>
+            
+            <div class="nav-links">
+                <a href="/">Home</a>
+                <a href="/adminlogin">Admin</a>
+                <a href="/login" class="active">User</a>
+                <a href="/register" >
+                    Register <i class="fas fa-user-plus"></i>
+                </a>
+            </div>
+        </div>
+    </nav>
+    <div class="main-content">
+        <div class="login-card">
+            
+            <div class="login-visual">
+                <i class="fas fa-user-md icon-main"></i>
+                <h2>Client Data Portal</h2>
+                <p>Access your patient data, view diagnostic explanations, and track treatment progress with ML insights.</p>
+                <i class="fas fa-hand-holding-medical" style="font-size: 2rem; opacity: 0.5;"></i>
+            </div>
+            
+            <div class="login-form-wrapper">
+                <h3 class="form-title">CLIENT LOGIN</h3>
+                
+                <form method="POST" action="/UserAction">
+                    <div class="form-group">
+                        <label for="username" class="form-label">Username</label>
+                        <input type="text" class="form-control" id="username" name="username" placeholder="Enter your username" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password" class="form-label">Password</label>
+                        <input type="password" class="form-control" id="password" name="password" placeholder="Enter your password" required>
+                    </div>
+
+                    <div class="form-group" style="margin-top: 35px;">
+                        <button type="submit" class="btn-submit">
+                            <i class="fas fa-sign-in-alt me-2"></i> Secure Login
+                        </button>
+                    </div>
+                </form>
+
+                <div class="register-link">
+                    <p class="text-muted">Don't have an account? <a href="/register">Register here</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="footer">
+        &copy; 2025 PrediHealth ML Innovations. All Rights Reserved. | Dedicated to Chronic Disease Prediction Research.
+    </div>
+    </body>
+
+</html>

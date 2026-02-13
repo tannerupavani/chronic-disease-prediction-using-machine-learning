@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Chronic Disease Prediction - User Dashboard</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="Dashboard for XAI Prostate Cancer Platform users with real-time metrics and detailed insights."
+        name="description">
+
+    <link href="img/favicon.ico" rel="icon">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="{{url_for('static', filename='css/bootstrap.min.css')}}" rel="stylesheet">
+
+    <link href="{{url_for('static', filename='css/style.css')}}" rel="stylesheet">
+    <style>
+        /* 🎨 Design Variables (Warm/Organic Palette from Style 3) */
+        :root {
+            --primary-color: #00897b;
+            /* Deep Teal/Mint (Earthy & Trustworthy) */
+            --secondary-color: #ff9800;
+            /* Warm Orange/Amber Accent */
+            --text-dark: #3e2723;
+            /* Deep Brown/Coffee for high contrast text */
+            --text-light: #795548;
+            /* Softer Brown for body text */
+            --bg-neutral: #fbe9e7;
+            /* Very Light Peach/Warm Background */
+            --bg-white: #ffffff;
+            --font-heading: 'Nunito', sans-serif;
+            --font-main: 'Nunito', sans-serif;
+            --shadow-light: 0 10px 30px rgba(0, 0, 0, 0.08);
+            /* Softer shadow */
+            --border-color: #e0e0e0;
+            --success: #66bb6a;
+            /* Lighter, friendlier green */
+            --warning: #ffb300;
+            --info: #4dd0e1;
+            --text-muted: #9e9e9e; /* Adjusted mute color for contrast */
+        }
+
+        /* Global Body Background (Bootstrap will also apply styles) */
+        body {
+            background: var(--bg-neutral);
+            font-family: var(--font-main);
+            color: var(--text-light);
+        }
+
+        /* Overrides for Primary Colors */
+        .text-proj-primary {
+            color: var(--primary-color) !important;
+        }
+
+        /* Use Secondary Color for Buttons/Highlights */
+        .btn-proj-primary,
+        .bg-proj-primary {
+            background-color: var(--secondary-color) !important;
+            border-color: var(--secondary-color) !important;
+            color: white !important;
+        }
+
+        .btn-proj-primary:hover {
+            background-color: #ffb300 !important;
+            /* Darker orange for hover */
+            border-color: #ffb300 !important;
+        }
+
+        .navbar .nav-item .nav-link.active,
+        .navbar .nav-item .nav-link:hover {
+            color: var(--primary-color) !important;
+            /* Teal text color on hover/active */
+            border-bottom: 3px solid var(--secondary-color);
+            /* Orange underline */
+        }
+
+        .breadcrumb-item.text-proj-primary.active {
+            color: var(--secondary-color) !important;
+            /* Orange active breadcrumb */
+        }
+
+        /* Footer Background Change for Darker look */
+        .container-fluid.bg-dark.footer {
+            background-color: var(--text-dark) !important;
+            /* Deep Brown Footer */
+        }
+
+        /* Back to Top button change */
+        .back-to-top {
+            background-color: var(--primary-color) !important;
+            /* Teal button */
+            color: white !important;
+            position: fixed;
+            display: none;
+            right: 30px;
+            bottom: 30px;
+            z-index: 99;
+            width: 45px;
+            height: 45px;
+        }
+
+        .back-to-top:hover {
+            background-color: #00695c !important;
+            /* Darker teal */
+        }
+
+        /* CSS for the complex title */
+        .project-title {
+            font-family: var(--font-heading);
+            font-size: 1.6rem;
+            /* Adjusted size for better fit */
+            line-height: 1.2;
+            color: var(--text-dark);
+            font-weight: 900;
+        }
+
+        .project-title span {
+            color: var(--primary-color);
+        }
+
+        /* Page Header Overrides */
+        .page-header {
+            background: linear-gradient(rgba(62, 39, 35, 0.8), rgba(62, 39, 35, 0.8)), url("img/header-bg.jpg") center center no-repeat;
+            /* Dark Brown gradient overlay */
+            background-size: cover;
+        }
+
+        .page-header h1 {
+            font-weight: 900 !important;
+            font-family: var(--font-heading);
+        }
+
+        /* Dashboard KPI Cards */
+        .kpi-card {
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: var(--shadow-light);
+            text-align: center;
+            background-color: var(--bg-white);
+            border-bottom: 5px solid var(--primary-color);
+            /* Teal bottom border */
+            transition: transform 0.3s, box-shadow 0.3s;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .kpi-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+        }
+
+        .kpi-card .kpi-icon {
+            font-size: 3.5rem;
+            color: var(--secondary-color);
+            /* Orange icon */
+            margin-bottom: 15px;
+        }
+
+        .kpi-card .kpi-value {
+            font-size: 2.8rem;
+            font-weight: 900;
+            color: var(--text-dark);
+            line-height: 1.1;
+            margin-bottom: 5px;
+        }
+
+        .kpi-card .kpi-label {
+            font-size: 1rem;
+            color: var(--text-light);
+            font-weight: 600;
+        }
+
+        /* Specific color for a positive KPI */
+        .kpi-card.kpi-highlight .kpi-value,
+        .kpi-card.kpi-highlight .kpi-label {
+            color: var(--primary-color);
+            /* Teal highlight */
+        }
+
+        /* Recent Activity Card & Model Comparison */
+        .section-card {
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 30px;
+            background: var(--bg-white);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            height: 100%;
+        }
+
+        .section-card h5,
+        .section-card h6 {
+            font-family: var(--font-heading);
+            color: var(--text-dark);
+            border-bottom: 3px solid var(--secondary-color);
+            /* Orange underline */
+            padding-bottom: 10px;
+            margin-bottom: 25px;
+            font-weight: 800;
+        }
+
+        /* New styling for the XAI Features List */
+        .xai-feature-list li {
+            border-bottom: 1px dashed #f0f0f0;
+        }
+
+        .xai-feature-list .feature-icon {
+            color: var(--secondary-color);
+            /* Orange feature icon */
+        }
+
+        .xai-feature-list .feature-title {
+            color: var(--text-dark);
+        }
+
+        /* Model Comparison Table */
+        .model-table th {
+            background-color: var(--primary-color);
+            /* Teal header */
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        .model-table td {
+            color: var(--text-dark);
+        }
+
+        .model-table .table-striped tbody tr:nth-of-type(odd) {
+            background-color: rgba(0, 137, 123, 0.05);
+            /* Light teal tint */
+        }
+
+        .model-table .text-proj-primary,
+        .model-table .btn-proj-primary {
+            color: var(--primary-color) !important; /* Keep best model text teal for distinction */
+        }
+        
+        .model-table .btn-proj-primary {
+            background-color: var(--secondary-color) !important; /* Use orange for button */
+            border-color: var(--secondary-color) !important;
+            color: white !important;
+        }
+
+
+        /* Alert/Announcement */
+        .announcement-alert {
+            background-color: var(--secondary-color);
+            /* Orange background */
+            color: white;
+            border-color: #ffb300;
+            margin-top: -50px; /* Pull up into the header space for better design flow */
+            position: relative;
+            z-index: 10;
+        }
+
+        .announcement-alert .fa-bullhorn {
+            color: var(--text-dark); /* Dark icon on orange background */
+        }
+    </style>
+</head>
+
+<body>
+    <div id="spinner"
+        class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
+        <div class="spinner-grow text-proj-primary" style="width: 3rem; height: 3rem;" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
+    <div class="container-fluid bg-light p-0 wow fadeIn" data-wow-delay="0.1s">
+        <div class="row gx-0 d-none d-lg-flex">
+            <div class="col-lg-7 px-5 text-start">
+            </div>
+            <div class="col-lg-5 px-5 text-end">
+            </div>
+        </div>
+    </div>
+
+    <nav class="navbar navbar-expand-lg bg-white navbar-light sticky-top p-0 wow fadeIn" data-wow-delay="0.1s">
+        <a href="index.html" class="navbar-brand d-flex align-items-center px-4 px-lg-5">
+            <h1 class="m-0 project-title">CHRONIC DISEASE PREDICTION USING <span>MACHINE LEARNING</span></h1>
+        </a>
+        <button type="button" class="navbar-toggler me-4" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarCollapse">
+            <div class="navbar-nav ms-auto p-4 p-lg-0">
+                <a href="/UserHome" class="nav-item nav-link active">Home</a>
+                <a href="/Detect" class="nav-item nav-link">Run Prediction</a>
+                <a href="/about" class="nav-item nav-link active">About</a>
+            </div>
+            <a href="/userlogin" class="btn btn-proj-primary rounded-0 py-4 px-lg-5 d-none d-lg-block">Logout<i
+                    class="fa fa-arrow-right ms-3"></i></a>
+        </div>
+    </nav>
+
+    <div class="container-fluid page-header py-5 mb-5 wow fadeIn" data-wow-delay="0.1s">
+        <div class="container py-5">
+            <h1 class="display-3 text-white mb-3 animated slideInDown">User Dashboard</h1>
+            <nav aria-label="breadcrumb animated slideInDown">
+                <ol class="breadcrumb text-uppercase mb-0">
+                    <li class="breadcrumb-item"><a class="text-white" href="#">Home</a></li>
+                    <li class="breadcrumb-item text-proj-primary active" aria-current="page">Dashboard</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+
+    <div class="container-xxl py-5 pt-0">
+        <div class="container">
+            <div class="row wow fadeInUp mb-5" data-wow-delay="0.1s">
+                <div class="col-12">
+                    <div class="announcement-alert">
+                        <i class="fa fa-bullhorn"></i>
+                        <span>New ML features are now live! Explore enhanced explainability in your model results.</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-center mx-auto mb-5 wow fadeInUp" data-wow-delay="0.1s" style="max-width: 900px;">
+                <h2 class="text-proj-primary display-5 fw-bold">Comprehensive Platform Overview</h2>
+                <p class="text-light lead">Gain instant insights into your project's data, model performance, and recent
+                    activities.</p>
+            </div>
+
+            <div class="row g-4 mb-5 wow fadeInUp" data-wow-delay="0.3s">
+                <div class="col-lg-3 col-md-6">
+                    <div class="kpi-card">
+                        <i class="fa fa-database kpi-icon mb-3"></i>
+                        <div class="kpi-value">12,450</div>
+                        <div class="kpi-label">Total Patient Records</div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="kpi-card">
+                        <i class="fa fa-cogs kpi-icon mb-3"></i>
+                        <div class="kpi-value">3</div>
+                        <div class="kpi-label">Active Models</div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="kpi-card kpi-highlight">
+                        <i class="fa fa-chart-line kpi-icon mb-3"></i>
+                        <div class="kpi-value">98.2<small>%</small></div>
+                        <div class="kpi-label">Highest Accuracy (RF)</div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="kpi-card">
+                        <i class="fa fa-clock kpi-icon mb-3"></i>
+                        <div class="kpi-value">Oct 4, 2025</div>
+                        <div class="kpi-label">Last Model Run</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row g-4 mb-5">
+                <div class="col-lg-6 wow fadeInUp" data-wow-delay="0.5s">
+                    <div class="section-card">
+                        <h5 class="mb-4">Project Focus: Explainable AI Methodology</h5>
+                        <p class="text-light mb-4">Our platform integrates state-of-the-art XAI techniques to provide
+                            transparent and trustworthy prostate cancer predictions. This is critical for clinical
+                            adoption.</p>
+                        <ul class="xai-feature-list">
+                            <li>
+                                <i class="fas fa-microscope feature-icon"></i>
+                                <div>
+                                    <div class="feature-title">Feature Importance Ranking</div>
+                                    <div class="feature-description">Identify which patient parameters (e.g., PSA, age,
+                                        biopsy score) most influence the model's prediction.</div>
+                                </div>
+                            </li>
+                            <li>
+                                <i class="fas fa-hand-holding-heart feature-icon"></i>
+                                <div>
+                                    <div class="feature-title">Local Explainability (LIME/SHAP)</div>
+                                    <div class="feature-description">Generate personalized, case-specific explanations
+                                        for individual patient predictions.</div>
+                                </div>
+                            </li>
+                            <li>
+                                <i class="fas fa-chart-pie feature-icon"></i>
+                                <div>
+                                    <div class="feature-title">Model Comparison & Fairness</div>
+                                    <div class="feature-description">A multi-model approach (SVM, RF, DT) ensures robust
+                                        performance and highlights potential bias.</div>
+                                </div>
+                            </li>
+                        </ul>
+                        <div class="mt-4 text-center">
+                            <a href="/XAI-Documentation" class="btn btn-outline-secondary">View XAI Documentation <i
+                                    class="fa fa-book-reader ms-2"></i></a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-6 wow fadeInUp" data-wow-delay="0.7s">
+                    <div class="section-card">
+                        <h5 class="mb-4">Core Platform Architecture</h5>
+                        <p class="text-light mb-3">The application is built on a robust architecture to ensure fast,
+                            secure, and reliable XAI service delivery.</p>
+                        <ul class="list-group list-group-flush activity-list">
+                            <li class="list-group-item">
+                                <span class="activity-description"><i
+                                        class="fas fa-server text-info me-2"></i>Backend: Flask Python Framework</span>
+                                <span class="activity-time">RESTful API</span>
+                            </li>
+                            <li class="list-group-item">
+                                <span class="activity-description"><i
+                                        class="fas fa-layer-group text-success me-2"></i>Machine Learning Library:
+                                    Scikit-learn</span>
+                                <span class="activity-time">Model Training</span>
+                            </li>
+                            <li class="list-group-item">
+                                <span class="activity-description"><i
+                                        class="fas fa-file-code text-primary me-2"></i>Frontend: HTML, CSS,
+                                    JavaScript</span>
+                                <span class="activity-time">Bootstrap 5</span>
+                            </li>
+                            <li class="list-group-item">
+                                <span class="activity-description"><i
+                                        class="fas fa-database text-warning me-2"></i>Data Storage: CSV/Database
+                                    (Local/Cloud)</span>
+                                <span class="activity-time">Patient Data</span>
+                            </li>
+                            <li class="list-group-item">
+                                <span class="activity-description"><i
+                                        class="fas fa-shield-alt text-danger me-2"></i>Security: Role-Based Access
+                                    Control</span>
+                                <span class="activity-time">User Auth</span>
+                            </li>
+                        </ul>
+                        <div class="mt-4 text-center">
+                            <a href="/Architecture" class="btn btn-outline-secondary">Technical Specification <i
+                                    class="fa fa-code-branch ms-2"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row g-4 mb-5">
+                <div class="col-12 wow fadeInUp" data-wow-delay="0.1s">
+                    <div class="section-card">
+                        <h5 class="mb-4">Model Performance Comparison</h5>
+                        <div class="table-responsive">
+                            <table class="table table-striped table-hover model-table align-middle">
+                                <thead class="text-white">
+                                    <tr>
+                                        <th scope="col">Model</th>
+                                        <th scope="col">Accuracy</th>
+                                        <th scope="col">Precision</th>
+                                        <th scope="col">Recall</th>
+                                        <th scope="col">F1-Score</th>
+                                        <th scope="col">Training Time</th>
+                                        <th scope="col">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><span class="fw-bold">Support Vector Machine (SVM)</span></td>
+                                        <td>96.5%</td>
+                                        <td>95.8%</td>
+                                        <td>96.2%</td>
+                                        <td>96.0%</td>
+                                        <td>35 sec</td>
+                                        <td><a href="/Detect" class="btn btn-outline-secondary btn-sm">Re-run</a></td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="fw-bold text-proj-primary">Random Forest</span></td>
+                                        <td class="text-proj-primary fw-bold">98.2%</td>
+                                        <td class="text-proj-primary fw-bold">97.9%</td>
+                                        <td class="text-proj-primary fw-bold">98.5%</td>
+                                        <td class="text-proj-primary fw-bold">98.2%</td>
+                                        <td>50 sec</td>
+                                        <td><a href="/Detect" class="btn btn-proj-primary btn-sm">Re-run</a></td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="fw-bold">Decision Tree</span></td>
+                                        <td>95.1%</td>
+                                        <td>94.5%</td>
+                                        <td>95.0%</td>
+                                        <td>94.8%</td>
+                                        <td>20 sec</td>
+                                        <td><a href="/Detect" class="btn btn-outline-secondary btn-sm">Re-run</a></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="mt-4 text-center">
+                            <a href="/Graphs" class="btn btn-outline-secondary">View All Graphs & Metrics <i
+                                    class="fa fa-chart-area ms-2"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-center mx-auto mb-5 wow fadeInUp" data-wow-delay="0.1s" style="max-width: 600px;">
+                <h2 class="text-proj-primary display-5 fw-bold">Your Workflow: Quick Actions</h2>
+                <p class="text-light lead">Streamline your analysis with these direct action points.</p>
+            </div>
+
+            <div class="row g-4 service-cards-row">
+                <div class="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
+                    <div class="card action-card-item rounded">
+                        <div class="card-body">
+                            <i class="fas fa-upload card-icon mb-3"></i>
+                            <h5 class="card-title">Upload New Dataset</h5>
+                            <p class="card-text">Securely upload and preprocess patient data for XAI model training.</p>
+                            <a href="/Upload" class="btn btn-proj-primary btn-sm rounded-pill">Start Upload</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.3s">
+                    <div class="card action-card-item rounded">
+                        <div class="card-body">
+                            <i class="fas fa-table card-icon mb-3"></i>
+                            <h5 class="card-title">Explore Raw Data</h5>
+                            <p class="card-text">View and inspect the structure and contents of your loaded datasets.</p>
+                            <a href="/ViewDataset" class="btn btn-proj-primary btn-sm rounded-pill">View Data</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.5s">
+                    <div class="card action-card-item rounded">
+                        <div class="card-body">
+                            <i class="fas fa-brain card-icon mb-3"></i>
+                            <h5 class="card-title">Run XAI Models</h5>
+                            <p class="card-text">Execute cutting-edge SVM, RF, and DT models for prostate cancer
+                                prediction.</p>
+                            <a href="/Detect" class="btn btn-proj-primary btn-sm rounded-pill">Start Prediction</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.7s">
+                    <div class="card action-card-item rounded">
+                        <div class="card-body">
+                            <i class="fas fa-chart-area card-icon mb-3"></i>
+                            <h5 class="card-title">Analyze Performance</h5>
+                            <p class="card-text">Visualize and compare model accuracies, precision, and recall with
+                                interactive graphs.</p>
+                            <a href="/Graphs" class="btn btn-proj-primary btn-sm rounded-pill">View Charts</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid bg-dark text-light footer mt-5 pt-5 wow fadeIn" data-wow-delay="0.1s">
+        <div class="container py-4">
+            <div class="row">
+                <div class="col-md-6 text-center text-md-start mb-3 mb-md-0"
+                    style="font-size: 20px; font-weight: 500;">
+                    &copy; <a class="border-bottom text-proj-primary" href="#">CHRONIC DISEASE PREDICTION USING MACHINE
+                        LEARNING</a>
+                </div>
+                <div class="col-md-6 text-center text-md-end">
+                    Designed By <a class="border-bottom text-proj-primary" href="#">SWTPVTLTD</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <a href="#" class="btn btn-lg btn-proj-primary btn-lg-square rounded-circle back-to-top"><i
+            class="bi bi-arrow-up"></i></a>
+
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script src="{{ url_for('static', filename='lib/wow/wow.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='lib/easing/easing.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='lib/waypoints/waypoints.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='lib/counterup/counterup.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='lib/owlcarousel/owl.carousel.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='lib/tempusdominus/js/moment.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='lib/tempusdominus/js/moment-timezone.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js') }}"></script>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+
+</html>

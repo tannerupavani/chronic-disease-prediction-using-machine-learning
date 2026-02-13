@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Dataset Preview - Chronic Disease Prediction using Machine Learning</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+
+    <link href="{{url_for('static', filename='css/bootstrap.min.css')}}" rel="stylesheet">
+
+    <style>
+        /* 🎨 Design Variables (Warm/Organic Palette from Style 3) - COPIED FROM FIRST HTML */
+        :root {
+            --primary-color: #00897b;
+            /* Deep Teal/Mint (Earthy & Trustworthy) */
+            --secondary-color: #ff9800;
+            /* Warm Orange/Amber Accent */
+            --text-dark: #3e2723;
+            /* Deep Brown/Coffee for high contrast text */
+            --text-light: #795548;
+            /* Softer Brown for body text */
+            --bg-neutral: #fbe9e7;
+            /* Very Light Peach/Warm Background */
+            --bg-white: #ffffff;
+            --font-heading: 'Nunito', sans-serif;
+            --font-main: 'Nunito', sans-serif;
+            --shadow-light: 0 10px 30px rgba(0, 0, 0, 0.08);
+            /* Softer shadow */
+            --border-color: #e0e0e0;
+            --success: #66bb6a;
+            /* Lighter, friendlier green */
+            --warning: #ffb300;
+            --info: #4dd0e1;
+        }
+
+        /* 🧹 Global Styles - COPIED FROM FIRST HTML */
+        body {
+            font-family: var(--font-main);
+            /* Soft, solid warm background */
+            background-color: var(--bg-neutral);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            color: var(--text-light);
+        }
+
+        /* Container style - COPIED FROM FIRST HTML */
+        .page-container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* --- Navbar Styles --- - COPIED FROM FIRST HTML */
+        .navbar {
+            background-color: var(--bg-white) !important;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            padding: 15px 0 !important;
+            /* Slightly reduced padding */
+        }
+
+        .navbar-brand h1 {
+            font-family: var(--font-heading);
+            font-size: 1.6rem !important;
+            /* Larger logo font */
+            font-weight: 900;
+            color: var(--text-dark) !important;
+        }
+
+        .navbar-brand h1 span {
+            color: var(--primary-color);
+        }
+
+        .navbar-nav .nav-link {
+            color: var(--text-light) !important;
+            font-weight: 700;
+            padding: 10px 15px !important;
+            transition: color 0.3s, border-bottom 0.3s;
+            line-height: 1.2;
+            text-align: center;
+        }
+
+        .navbar-nav .nav-link:hover,
+        .navbar-nav .nav-link.active {
+            color: var(--primary-color) !important;
+            border-bottom: 3px solid var(--secondary-color);
+            /* Orange underline */
+        }
+
+        .btn-primary {
+            background-color: var(--secondary-color) !important;
+            /* Orange button */
+            border-color: var(--secondary-color) !important;
+            font-weight: 700 !important;
+            text-transform: uppercase;
+            border-radius: 8px;
+            /* Rounded buttons */
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+
+        .btn-primary:hover {
+            background-color: #ffb300 !important;
+            border-color: #ffb300 !important;
+        }
+
+        /* --- Page Header --- - COPIED FROM FIRST HTML */
+        .page-header-simple {
+            background: var(--bg-neutral);
+            padding: 60px 0 40px 0;
+            text-align: center;
+        }
+
+        .page-header-simple h1 {
+            font-family: var(--font-heading);
+            font-weight: 900;
+            font-size: 3.0rem;
+            /* Larger dashboard title */
+            color: var(--text-dark);
+            margin-bottom: 10px;
+        }
+
+        .breadcrumb-item.active {
+            color: var(--secondary-color) !important;
+            /* Orange breadcrumb */
+            font-weight: 700;
+        }
+
+        /* --- Main Content Area --- */
+        .main-content-wrapper {
+            flex-grow: 1;
+            padding: 30px 0;
+        }
+
+        /* --- Dataset Section (Updated to use FIRST HTML's card/panel style) --- */
+        .section-container {
+            /* Adopting the style of the dashboard-panel from the Admin Home page */
+            background: var(--bg-white);
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: var(--shadow-light);
+            border-left: 5px solid var(--primary-color);
+            /* Teal accent border */
+            margin-bottom: 50px;
+        }
+
+        .section-container h1 {
+            font-family: var(--font-heading);
+            font-weight: 800;
+            color: var(--text-dark);
+            font-size: 2rem;
+            border-bottom: 2px solid var(--bg-neutral);
+            /* Soft divider */
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        .section-container p {
+            color: var(--text-light);
+            font-family: var(--font-main);
+            font-size: 1.1rem;
+            margin-bottom: 30px;
+        }
+
+        /* --- Table Styles (Styled to match FIRST HTML's palette) --- */
+        .table-container {
+            max-height: 500px;
+            overflow-y: auto;
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05); /* subtle table shadow */
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.95rem;
+            background-color: var(--bg-white);
+        }
+
+        thead tr {
+            background-color: var(--primary-color);
+            /* Deep Teal header */
+            color: #fff;
+            position: sticky;
+            /* Keep header visible on scroll */
+            top: 0;
+            z-index: 10;
+        }
+
+        th,
+        td {
+            padding: 12px 15px;
+            border: 1px solid #e9ecef;
+            /* Lighter grid lines */
+            text-align: left;
+            color: var(--text-dark); /* Darker text for readability */
+            font-weight: 600;
+        }
+
+        th {
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 1rem;
+        }
+
+        tbody tr:nth-child(even) {
+            background-color: #f7f3f2;
+            /* Soft warm light color for alternating row */
+        }
+
+        tbody tr:hover {
+            background-color: #ffe0b2;
+            /* Light orange hover */
+            transition: 0.3s;
+        }
+
+        /* Scrollbar styling */
+        .table-container::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .table-container::-webkit-scrollbar-thumb {
+            background-color: rgba(0, 137, 123, 0.5);
+            /* Primary color scrollbar */
+            border-radius: 10px;
+        }
+
+
+        /* --- Footer --- - COPIED FROM FIRST HTML */
+        .footer {
+            background-color: var(--text-dark) !important;
+            /* Deep Brown Footer */
+            color: #d7ccc8;
+            padding: 30px 0 !important;
+            text-align: center;
+            font-size: 0.9rem;
+            margin-top: auto;
+        }
+
+        .footer a {
+            color: var(--secondary-color) !important;
+            /* Orange link */
+        }
+
+        /* Responsive Grid Adjustments - COPIED FROM FIRST HTML */
+        @media (max-width: 992px) {
+            .navbar-collapse {
+                background-color: var(--bg-white);
+                border-top: 1px solid #eee;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg bg-white navbar-light sticky-top p-0 wow fadeIn" data-wow-delay="0.1s">
+        <div class="page-container navbar-content d-flex justify-content-between align-items-center w-100">
+            <a href="/AdminHome" class="navbar-brand d-flex align-items-center px-4 px-lg-0">
+                <h1 class="m-0 text-primary">CHRONIC DISEASE PREDICTION USING <span>MACHINE LEARNING</span></h1>
+            </a>
+            <button type="button" class="navbar-toggler me-4" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarCollapse">
+                <div class="navbar-nav ms-auto p-4 p-lg-0">
+                    <a href="/AdminHome" class="nav-item nav-link">Home</a>
+                    <a href="/Upload" class="nav-item nav-link active">Upload Dataset</a>
+                    <a href="/preprocess" class="nav-item nav-link">Preprocess & Split</a>
+                    <a href="/xgboost" class="nav-item nav-link">Run XGBoost</a>
+                    <a href="/RandomForest" class="nav-item nav-link">Random Forest</a>
+                    <a href="/Decision" class="nav-item nav-link">Decision Tree</a>
+                    <a href="/comparison" class="nav-item nav-link">Comparison Graph</a>
+                </div>
+                <a href="/adminlogin" class="btn btn-primary rounded-0 py-4 px-lg-5 d-none d-lg-block">Logout<i
+                        class="fa fa-sign-out-alt ms-3"></i></a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="page-header-simple">
+        <div class="container">
+            <h1>Dataset Preview</h1>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb justify-content-center">
+                    <li class="breadcrumb-item"><a class="text-secondary" href="/AdminHome">Home</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Dataset Preview</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+
+    <div class="container-xxl py-5 main-content-wrapper">
+        <div class="page-container">
+            <div class="section-container wow fadeIn" data-wow-delay="0.1s">
+
+                <div class="text-center mb-4">
+                    <h1>Uploaded Dataset Preview</h1>
+                    <p>Below is a snapshot of the first few rows of your uploaded dataset.</p>
+                </div>
+
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                {% for column in columns %}
+                                <th>{{ column }}</th>
+                                {% endfor %}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for row in rows %}
+                            <tr>
+                                {% for cell in row %}
+                                <td>{{ cell }}</td>
+                                {% endfor %}
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid footer wow fadeIn" data-wow-delay="0.1s">
+        <div class="container">
+            &copy; <a class="border-bottom" href="#">PROJECTED EX</a>. All Rights Reserved.
+        </div>
+    </div>
+    <a href="#" class="btn btn-lg btn-primary btn-lg-square rounded-circle back-to-top"><i
+            class="bi bi-arrow-up"></i></a>
+
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ url_for('static', filename='lib/wow/wow.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='lib/easing/easing.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='lib/waypoints/waypoints.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='lib/counterup/counterup.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='lib/owlcarousel/owl.carousel.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <script>
+        new WOW().init();
+    </script>
+</body>
+
+</html>
